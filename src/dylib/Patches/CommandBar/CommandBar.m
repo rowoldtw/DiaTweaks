@@ -328,7 +328,11 @@ static void DPWatchNewTab(DPCommandBarOverlay *overlay) {
     }
     DPPlaceShade(overlay.shade, window);
     id tab = DPScriptTab(window, DPTabID(overlay.openedTab));
-    if (!tab) return (void)DPDismissCommandBar(overlay);
+    if (!tab) {
+        // Another space came to the front, which would leave the new tab, unused, in the one the bar was opened in.
+        DPDismissCommandBar(overlay);
+        return DPCloseTab(DPScriptTabInAnyProfile(window, DPTabID(overlay.openedTab)));
+    }
     // Another tab came to the front, such as a link from another app, so the new tab went unused.
     NSString *active = DPActiveTabID(window);
     if (active && ![active isEqual:DPTabID(tab)] && ![active isEqual:DPTabID(overlay.returnTab)]) {

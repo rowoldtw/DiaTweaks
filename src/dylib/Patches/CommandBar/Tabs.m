@@ -12,6 +12,13 @@ id DPScriptTab(NSWindow *window, NSString *tabID) {
     return nil;
 }
 
+id DPScriptTabInAnyProfile(NSWindow *window, NSString *tabID) {
+    for (id profile in [DPScriptWindow(window) valueForKey:@"appleScriptProfiles"])
+        for (id tab in [profile valueForKey:@"appleScriptTabs"])
+            if ([[tab valueForKey:@"tabId"] isEqual:tabID]) return tab;
+    return nil;
+}
+
 NSString *DPTabID(id tab) { return [tab valueForKey:@"tabId"]; }
 NSString *DPActiveTabID(NSWindow *window) { return DPTabID([DPScriptWindow(window) valueForKey:@"activeTab"]); }
 void DPFocusTab(id tab) { [tab performSelector:@selector(focus:) withObject:nil]; }
